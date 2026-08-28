@@ -7,7 +7,7 @@ library (`@bubblewrap/core` + `@bubblewrap/cli`, pulled from npm, not vendored
 or forked), with:
 
 - **Multi-site profiles** — one JSON file per website you own, so you can
-  build TWAs for Seeze *and* any future site from the same project.
+  build TWAs for as many sites as you like from the same project.
 - **Play Store compliance patch** — defensively guarantees `targetSdkVersion
   36` regardless of which Bubblewrap version you have installed.
 - **Full CLI pipeline** — init → build → sign → verify → assetlinks, each
@@ -19,18 +19,20 @@ or forked), with:
 👉 **Start here: [`RUN.md`](./RUN.md)** — the full command reference for
 setup, building, signing, and publishing.
 
+Repo: https://github.com/Amaan9136/web-to-androidtwa
+
 ## Project layout
 
 ```
 webtwa/
 ├── RUN.md                 ← full command reference (start here)
+├── PROMPT.md               ← AI-assistant prompt to walk a user through setup
 ├── package.json
 ├── .env.example            ← keystore password env vars template
 ├── lib/                     ← shared helpers (args, profile loader, shell)
 ├── scripts/                 ← every CLI command (init, build, sign, verify, ...)
 ├── profiles/
-│   ├── example.json         ← template for any new site
-│   └── seeze.json           ← pre-configured profile for seeze.automatech.live
+│   └── example.json         ← template for any new site
 ├── keystores/                ← your .jks files live here (gitignored)
 └── output/                    ← generated Android projects + build artifacts (gitignored)
 ```
@@ -40,10 +42,11 @@ webtwa/
 ```bash
 npm install
 npm run doctor
-npm run sign -- --profile seeze --generate-key
-npm run build -- --profile seeze
-npm run sign -- --profile seeze
-npm run verify -- --profile seeze
+cp profiles/example.json profiles/myapp.json   # edit it for your site
+npm run sign -- --profile myapp --generate-key
+npm run build -- --profile myapp
+npm run sign -- --profile myapp
+npm run verify -- --profile myapp
 ```
 
 Full details, flags, and troubleshooting: see [`RUN.md`](./RUN.md).

@@ -17,3 +17,5 @@ keystores/*.p12
 .DS_Store
 Thumbs.db
 *.log
+prompting
+repomix-output.*

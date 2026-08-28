@@ -10,6 +10,10 @@ This is **not** a wrapper around pwabuilder.com — it drives Bubblewrap's
 programmatic API directly, so it's scriptable, reusable across every site you
 own, and doesn't depend on any third-party website staying online.
 
+All examples below use a placeholder profile name, `myapp`. Replace it with
+whatever you name your own profile file (e.g. `--profile mystore` for
+`profiles/mystore.json`).
+
 ---
 
 ## 0. Prerequisites
@@ -31,8 +35,8 @@ npm run doctor
 ## 1. Install
 
 ```bash
-git clone <this-project-repo-or-unzip-it>
-cd webtwa
+git clone https://github.com/Amaan9136/web-to-androidtwa.git
+cd web-to-androidtwa
 npm install
 ```
 
@@ -46,18 +50,17 @@ just the GitHub source tree).
 ## 2. Configure a profile (one JSON file per website)
 
 Every site you want to package lives as one JSON file in `/profiles`. A
-profile for **Seeze** is already included at `profiles/seeze.json`. To add
-another site of yours later:
+template is included at `profiles/example.json`. To set up your own site:
 
 ```bash
-cp profiles/example.json profiles/mysite.json
+cp profiles/example.json profiles/myapp.json
 ```
 
 Edit the fields — see [Profile field reference](#profile-field-reference)
 below. At minimum, update:
 
-- `packageId` — reverse-domain Android app ID, e.g. `com.mysite.app.twa`
-- `host` — your bare domain, e.g. `mysite.com`
+- `packageId` — reverse-domain Android app ID, e.g. `com.myapp.twa`
+- `host` — your bare domain, e.g. `myapp.com`
 - `webManifestUrl` — full URL to your `manifest.json`
 - `iconUrl` / `maskableIconUrl` — must be ≥512×512 PNGs, publicly reachable
 - `themeColor` / `backgroundColor`
@@ -78,30 +81,31 @@ an update to one already on Google Play.
 
 ### Option A — You already have a keystore
 
-You already exported a working package from PWABuilder with a real
-`signing.keystore`. **Reuse it** — Google Play requires every update to an
-app to be signed with the *same* key as the original upload, so generating a
-new one now would make you unable to update the app later (or would force
-you to publish under a brand new package ID).
+If this app is already live on Google Play (for example, you previously
+exported a package from PWABuilder with a real `signing.keystore`), **reuse
+it** — Google Play requires every update to an app to be signed with the
+*same* key as the original upload, so generating a new one now would make you
+unable to update the app later (or would force you to publish under a brand
+new package ID).
 
-First, update `profiles/seeze.json`'s `signingKey` block to match what
-PWABuilder gave you:
+First, update `profiles/myapp.json`'s `signingKey` block to match your
+existing key:
 
 ```jsonc
 "signingKey": {
-  "path": "keystores/seeze.jks",
-  "alias": "my-key-alias",   // <-- from your signing-key-info.txt, not "seeze"
-  "dn": "CN=Seeze Admin, OU=Engineering, O=Seeze, L=Unknown, S=Unknown, C=IN"
+  "path": "keystores/myapp.jks",
+  "alias": "my-key-alias",   // <-- from your signing-key-info.txt, not the profile name
+  "dn": "CN=My App Admin, OU=Engineering, O=My Company, L=City, S=State, C=US"
 }
 ```
 
 Then import the real file into this project:
 
 ```bash
-node scripts/sign.js --profile seeze --import-existing "C:\Users\Amaan M k\Downloads\Seeze - Google Play package\signing.keystore"
+node scripts/sign.js --profile myapp --import-existing "/path/to/your/signing.keystore"
 ```
 
-This copies it to `keystores/seeze.jks` and verifies the alias matches your
+This copies it to `keystores/myapp.jks` and verifies the alias matches your
 profile.
 
 > ⚠️ **Never write real passwords into this file, a commit, or any tracked
@@ -133,7 +137,7 @@ accidentally `git add`.
 ### Option B — Brand new app, no existing keystore
 
 ```bash
-npm run sign -- --profile seeze --generate-key
+npm run sign -- --profile myapp --generate-key
 ```
 
 You'll be prompted for a keystore password and key password. **Type only the
@@ -158,17 +162,17 @@ defensively patches `targetSdkVersion` to 36, then runs the Gradle release
 build:
 
 ```bash
-npm run build -- --profile seeze
+npm run build -- --profile myapp
 ```
 
 Useful flags:
 
 ```bash
 # Scaffold + patch only, skip the (slow) Gradle build
-npm run build -- --profile seeze --skip-build
+npm run build -- --profile myapp --skip-build
 
 # Also produce a debuggable/unsigned APK alongside the AAB
-npm run build -- --profile seeze --apk
+npm run build -- --profile myapp --apk
 ```
 
 First run downloads Gradle + Android build tools (~1GB) — this can take
@@ -177,7 +181,7 @@ several minutes depending on your connection.
 Output lands at:
 
 ```
-output/seeze/app/build/outputs/bundle/release/app-release.aab
+output/myapp/app/build/outputs/bundle/release/app-release.aab
 ```
 
 ---
@@ -188,15 +192,15 @@ If Gradle didn't already auto-sign the bundle (depends on whether
 `key.properties` was picked up), sign it manually:
 
 ```bash
-npm run sign -- --profile seeze
+npm run sign -- --profile myapp
 ```
 
 This signs the default output path
-(`output/seeze/app/build/outputs/bundle/release/app-release.aab`) with the
+(`output/myapp/app/build/outputs/bundle/release/app-release.aab`) with the
 keystore from the profile. To sign a different file:
 
 ```bash
-npm run sign -- --profile seeze --file path/to/app-release.aab
+npm run sign -- --profile myapp --file path/to/app-release.aab
 ```
 
 ---
@@ -207,7 +211,7 @@ Checks the signature, confirms `targetSdkVersion` compliance, and prints a
 reminder + exact fingerprint for your site's Digital Asset Links file:
 
 ```bash
-npm run verify -- --profile seeze
+npm run verify -- --profile myapp
 ```
 
 ---
@@ -218,8 +222,8 @@ Required for the app to open **fullscreen** instead of showing a browser
 address bar. Print the exact JSON your site must host:
 
 ```bash
-npm run patch -- --profile seeze          # (already run as part of build, shown here for clarity)
-node scripts/gen-assetlinks.js --profile seeze
+npm run patch -- --profile myapp          # (already run as part of build, shown here for clarity)
+node scripts/gen-assetlinks.js --profile myapp
 ```
 
 Host the printed JSON at:
@@ -233,7 +237,7 @@ served with `Content-Type: application/json`, over HTTPS, no redirects.
 To also write it to disk:
 
 ```bash
-node scripts/gen-assetlinks.js --profile seeze --write
+node scripts/gen-assetlinks.js --profile myapp --write
 ```
 
 ---
@@ -248,7 +252,7 @@ Production/Testing track → Create new release. No further conversion needed.
 ## One-liner (after profile + keystore are set up)
 
 ```bash
-npm run build -- --profile seeze && npm run sign -- --profile seeze && npm run verify -- --profile seeze
+npm run build -- --profile myapp && npm run sign -- --profile myapp && npm run verify -- --profile myapp
 ```
 
 ---
@@ -273,9 +277,9 @@ Or via the unified CLI (identical behavior, shorter to type once linked):
 
 ```bash
 npm link
-webtwa build --profile seeze
-webtwa sign --profile seeze
-webtwa verify --profile seeze
+webtwa build --profile myapp
+webtwa sign --profile myapp
+webtwa verify --profile myapp
 ```
 
 ---
