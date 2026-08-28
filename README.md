@@ -1,4 +1,4 @@
-# webtwa — Web-to-Android PWA Toolkit
+# Web to Android PWA Toolkit
 
 A general-purpose, reusable toolkit for turning **any** website's PWA into a
 signed Android App Bundle (`.aab`) ready for Google Play — built directly on
