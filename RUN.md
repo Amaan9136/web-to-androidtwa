@@ -147,7 +147,7 @@ terminals.
 > refuse it and tell you to redo it — this used to fail silently.
 
 > ⚠️ **Back up whichever keystore file you end up using somewhere durable.**
-> If you lose it, you can never publish an update to that package ID again.
+> If you lose it, you can never publish an update to that package ID again. 
 
 ---
 
