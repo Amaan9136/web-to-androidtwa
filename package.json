@@ -1,0 +1,26 @@
+{
+  "name": "webtwa",
+  "version": "1.0.0",
+  "private": true,
+  "description": "General-purpose Web-to-Android PWA (TWA) build toolkit. Wraps Google's open-source Bubblewrap CLI, supports multiple site profiles, patches targetSdkVersion for Play Store compliance, and signs APK/AAB with your own keystore.",
+  "bin": {
+    "webtwa": "./scripts/cli.js"
+  },
+  "scripts": {
+    "init": "node scripts/init.js",
+    "build": "node scripts/build.js",
+    "patch": "node scripts/patch-gradle.js",
+    "sign": "node scripts/sign.js",
+    "verify": "node scripts/verify.js",
+    "list-profiles": "node scripts/list-profiles.js",
+    "doctor": "node scripts/doctor.js"
+  },
+  "dependencies": {
+    "@bubblewrap/core": "^1.25.0",
+    "@bubblewrap/cli": "^1.25.0"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "license": "MIT"
+}

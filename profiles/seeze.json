@@ -1,0 +1,52 @@
+{
+  "packageId": "live.automatech.seeze.twa",
+  "host": "seeze.automatech.live",
+  "name": "Seeze",
+  "launcherName": "Seeze",
+  "display": "standalone",
+
+  "webManifestUrl": "https://seeze.automatech.live/manifest.json",
+  "startUrl": "/",
+
+  "iconUrl": "https://seeze.automatech.live/icon-512.png",
+  "maskableIconUrl": "https://seeze.automatech.live/icon-512-maskable.png",
+  "monochromeIconUrl": "https://seeze.automatech.live/icon-monochrome.png",
+
+  "themeColor": "#8c5a3c",
+  "navigationColor": "#8c5a3c",
+  "backgroundColor": "#f7f3eb",
+
+  "appVersionName": "1.0.0",
+  "appVersionCode": 1,
+  "minSdkVersion": 24,
+
+  "fallbackType": "customtabs",
+  "enableNotifications": true,
+  "features": {},
+  "shortcuts": [
+    {
+      "name": "Browse Snaps",
+      "shortName": "Snaps",
+      "url": "/snaps",
+      "chosenIconUrl": "https://seeze.automatech.live/icon-192.png"
+    },
+    {
+      "name": "My Orders",
+      "shortName": "Orders",
+      "url": "/orders",
+      "chosenIconUrl": "https://seeze.automatech.live/icon-192.png"
+    },
+    {
+      "name": "My Profile",
+      "shortName": "Profile",
+      "url": "/profile",
+      "chosenIconUrl": "https://seeze.automatech.live/icon-192.png"
+    }
+  ],
+
+  "signingKey": {
+    "path": "keystores/seeze.jks",
+    "alias": "my-key-alias",
+    "dn": "CN=Seeze Admin, OU=Engineering, O=Seeze, L=Unknown, S=Unknown, C=IN"
+  }
+}

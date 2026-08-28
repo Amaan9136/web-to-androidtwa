@@ -1,0 +1,19 @@
+# Dependencies
+node_modules/
+
+# Generated Android projects & build artifacts
+output/*
+!output/.gitkeep
+
+# Keystores and secrets — NEVER commit these
+keystores/*.jks
+keystores/*.keystore
+keystores/*.p12
+*.jks
+*.keystore
+.env
+
+# OS/editor cruft
+.DS_Store
+Thumbs.db
+*.log

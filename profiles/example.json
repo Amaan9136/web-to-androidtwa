@@ -1,0 +1,35 @@
+{
+  "_comment": "Copy this file to profiles/<yoursite>.json and fill in real values. Every field here is required.",
+
+  "packageId": "com.example.app.twa",
+  "host": "example.com",
+  "name": "Example App",
+  "launcherName": "Example",
+  "display": "standalone",
+
+  "webManifestUrl": "https://example.com/manifest.json",
+  "startUrl": "/",
+
+  "iconUrl": "https://example.com/icons/icon-512.png",
+  "maskableIconUrl": "https://example.com/icons/icon-maskable-512.png",
+  "monochromeIconUrl": "",
+
+  "themeColor": "#000000",
+  "navigationColor": "#000000",
+  "backgroundColor": "#ffffff",
+
+  "appVersionName": "1.0.0",
+  "appVersionCode": 1,
+  "minSdkVersion": 24,
+
+  "fallbackType": "customtabs",
+  "enableNotifications": true,
+  "features": {},
+  "shortcuts": [],
+
+  "signingKey": {
+    "path": "keystores/example.jks",
+    "alias": "example",
+    "dn": "CN=Example App, OU=Engineering, O=Example Inc, L=City, S=State, C=US"
+  }
+}
