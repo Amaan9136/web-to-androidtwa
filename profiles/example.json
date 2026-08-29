@@ -31,5 +31,8 @@
     "path": "keystores/example.jks",
     "alias": "example",
     "dn": "CN=Example App, OU=Engineering, O=Example Inc, L=City, S=State, C=US"
-  }
+  },
+
+  "_playSigningFingerprint_comment": "Once this app is published and Play App Signing is enabled, get the 'App signing key certificate' SHA-256 fingerprint from Play Console -> Protected with Play -> Play Store protection -> Manage Play app signing, and paste it below. Without this, npm run gen-assetlinks will only emit your local upload-key fingerprint, and the TWA will show the browser URL bar for every user who installed from the Play Store.",
+  "playSigningFingerprint": ""
 }

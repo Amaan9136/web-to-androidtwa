@@ -48,5 +48,7 @@
     "path": "keystores/seeze.jks",
     "alias": "my-key-alias",
     "dn": "CN=Seeze Admin, OU=Engineering, O=Seeze, L=Unknown, S=Unknown, C=IN"
-  }
+  },
+
+  "playSigningFingerprint": "10:0D:65:31:3B:1F:58:90:80:7F:30:A7:70:50:4E:99:4A:A9:17:18:B0:B8:A7:68:47:C9:29:A4:9A:48:23:0A"
 }

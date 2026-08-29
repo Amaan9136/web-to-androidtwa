@@ -45,7 +45,38 @@ function main() {
   const profileName = args.profile || args._[0];
   const profile = loadProfile(profileName);
 
-  const fingerprint = getFingerprint(profile);
+  const uploadFingerprint = getFingerprint(profile);
+
+  // IMPORTANT: If Play App Signing is enabled for this app (Play Console ->
+  // Protected with Play -> Play Store protection -> Manage Play app signing),
+  // Google re-signs your app with its own "App signing key" before real users
+  // download it from the Play Store. That fingerprint is DIFFERENT from your
+  // local upload keystore's fingerprint (the one derived above via keytool).
+  //
+  // If assetlinks.json only lists the upload key fingerprint, Digital Asset
+  // Link verification will fail on every Play Store-installed copy of the
+  // app, and the TWA will silently fall back to a browser tab with the
+  // Chrome URL bar visible instead of running fullscreen/standalone.
+  //
+  // Set profile.playSigningFingerprint (in profiles/<name>.json) to the
+  // "SHA-256 certificate fingerprint" shown under App signing key in Play
+  // Console, and it will be included here automatically.
+  const fingerprints = [uploadFingerprint];
+  if (profile.playSigningFingerprint) {
+    if (!fingerprints.includes(profile.playSigningFingerprint)) {
+      fingerprints.unshift(profile.playSigningFingerprint);
+    }
+  } else {
+    warn(
+      'No "playSigningFingerprint" set in this profile. If Play App Signing is ' +
+      'enabled for this app, the generated assetlinks.json will be INCOMPLETE and ' +
+      'the TWA will show the browser URL bar for users who installed from the Play ' +
+      'Store. Get the "App signing key certificate" SHA-256 fingerprint from ' +
+      'Play Console -> Protected with Play -> Play Store protection -> ' +
+      'Manage Play app signing, add it to profiles/' + profile._name + '.json as ' +
+      '"playSigningFingerprint", and re-run this script.'
+    );
+  }
 
   const assetLinks = [
     {
@@ -53,7 +84,7 @@ function main() {
       target: {
         namespace: 'android_app',
         package_name: profile.packageId,
-        sha256_cert_fingerprints: [fingerprint],
+        sha256_cert_fingerprints: fingerprints,
       },
     },
   ];
@@ -65,6 +96,9 @@ function main() {
   console.log('');
   log(`Host this exact content at: https://${profile.host}/.well-known/assetlinks.json`);
   log('Content-Type must be application/json, and it must be served over HTTPS with no redirects.');
+  if (profile.playSigningFingerprint) {
+    log('Includes both the Play App Signing key fingerprint and your local upload key fingerprint.');
+  }
 
   if (args.write) {
     const outPath = path.join(profile._outputDir, 'assetlinks.json');
