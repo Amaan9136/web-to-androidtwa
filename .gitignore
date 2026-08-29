@@ -19,3 +19,6 @@ Thumbs.db
 *.log
 prompting
 repomix-output.*
+
+# PWA Builder Keys Backup
+my-project-keys-backup
