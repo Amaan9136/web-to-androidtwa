@@ -63,7 +63,11 @@ async function main() {
     ? ['bundleRelease', 'assembleRelease']
     : ['bundleRelease'];
 
-  run(gradlewName, tasks, { cwd: profile._outputDir, shell: process.platform === 'win32' });
+  if (process.platform === 'win32') {
+    run([gradlewName, ...tasks].join(' '), [], { cwd: profile._outputDir, shell: true });
+  } else {
+    run(gradlewName, tasks, { cwd: profile._outputDir });
+  }
 
   const aabPath = path.join(profile._outputDir, 'app', 'build', 'outputs', 'bundle', 'release', 'app-release.aab');
   const apkPath = path.join(profile._outputDir, 'app', 'build', 'outputs', 'apk', 'release', 'app-release-unsigned.apk');

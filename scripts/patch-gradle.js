@@ -19,6 +19,23 @@ const args = parseArgs(process.argv.slice(2));
 const targetSdk = args.target ? Number(args.target) : 36;
 const minSdkOverride = args.min ? Number(args.min) : null;
 
+function patchJcenter(profile) {
+  const gradlePath = path.join(profile._outputDir, 'build.gradle');
+  if (!fs.existsSync(gradlePath)) return;
+
+  let content = fs.readFileSync(gradlePath, 'utf8');
+  const original = content;
+
+  content = content.replace(/jcenter\(\)/g, 'mavenCentral()');
+
+  if (content === original) {
+    ok('build.gradle repositories already free of jcenter().');
+  } else {
+    fs.writeFileSync(gradlePath, content, 'utf8');
+    ok(`Patched ${gradlePath} → replaced deprecated jcenter() with mavenCentral().`);
+  }
+}
+
 function patchFile(profile) {
   const gradlePath = path.join(profile._outputDir, 'app', 'build.gradle');
   if (!fs.existsSync(gradlePath)) {
@@ -59,4 +76,5 @@ function patchFile(profile) {
 
 const profileName = args.profile || args._[0];
 const profile = loadProfile(profileName);
+patchJcenter(profile);
 patchFile(profile);
