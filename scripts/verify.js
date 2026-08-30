@@ -47,7 +47,19 @@ async function main() {
     warn(`build.gradle not found — project not yet scaffolded. Run: npm run build -- --profile ${profile._name}`);
   }
 
-  // 2. Signature check
+  // 2. R8/shrinkResources check (Play Console "memory and performance" finding)
+  if (fs.existsSync(gradlePath)) {
+    const content = fs.readFileSync(gradlePath, 'utf8');
+    const hasMinify = /minifyEnabled\s+true/.test(content);
+    const hasShrink = /shrinkResources\s+true/.test(content);
+    if (hasMinify && hasShrink) {
+      ok('R8 code shrinking (minifyEnabled) and resource shrinking (shrinkResources) are both enabled.');
+    } else {
+      warn(`R8 optimization incomplete (minifyEnabled=${hasMinify}, shrinkResources=${hasShrink}). Run: npm run patch -- --profile ${profile._name}`);
+    }
+  }
+
+  // 3. Signature check
   if (fs.existsSync(aabPath)) {
     log('Checking AAB signature with jarsigner -verify...');
     const res = tryRun('jarsigner', ['-verify', '-verbose', aabPath]);
@@ -60,7 +72,7 @@ async function main() {
     warn(`No AAB found at ${aabPath} yet — run the build first.`);
   }
 
-  // 3. Digital Asset Links reminder
+  // 4. Digital Asset Links reminder
   console.log('');
   log('Digital Asset Links check (manual step):');
   console.log(`   Your site must serve https://${profile.host}/.well-known/assetlinks.json`);
