@@ -67,6 +67,15 @@ const ANDROID_BROWSER_HELPER_VERSION = '2.7.3';
 // warning for a build that doesn't compile at all. If you want AGP 9 later,
 // do it as its own deliberate, tested migration — not bundled into this fix.
 const AGP_VERSION = '8.13.0';
+// AGP 8.13.0 requires Gradle >= 8.13 (confirmed by a real build failure
+// against the template's default Gradle 8.11.1: "Minimum supported Gradle
+// version is 8.13. Current version is 8.11.1."). AGP 8.x minor-version
+// Gradle floors have proven inconsistent/hard to pin exactly release notes
+// to release notes, so rather than target the bare minimum (8.13) again,
+// this targets 8.14.5 — the last stable patch in the 8.x line — for
+// headroom against any future 8.x floor bump, while staying same-major
+// (no Kotlin-default, DSL-removal, or other AGP-9-style breaking changes).
+const GRADLE_WRAPPER_VERSION = '8.14.5';
 
 function patchJcenter(profile) {
   const gradlePath = path.join(profile._outputDir, 'build.gradle');
@@ -150,15 +159,44 @@ function patchAndroidBrowserHelperVersion(profile) {
 }
 
 /**
+ * Bumps the Gradle wrapper to the minimum version AGP_VERSION actually
+ * requires. Confirmed necessary by a real build failure: AGP 8.13.0 refuses
+ * to run on the template's default Gradle 8.11.1 ("Minimum supported Gradle
+ * version is 8.13"). This is a small, low-risk, same-major-version bump —
+ * not the disruptive 8.x -> 9.1.0 jump AGP 9.0 would require.
+ */
+function patchGradleWrapperVersion(profile) {
+  const wrapperPropsPath = path.join(
+    profile._outputDir, 'gradle', 'wrapper', 'gradle-wrapper.properties'
+  );
+  if (!fs.existsSync(wrapperPropsPath)) {
+    warn(`gradle-wrapper.properties not found at ${wrapperPropsPath} — skipping Gradle version patch. ` +
+      `If the build fails with an AGP/Gradle incompatibility error, manually set Gradle to >= ${GRADLE_WRAPPER_VERSION}.`);
+    return;
+  }
+
+  let content = fs.readFileSync(wrapperPropsPath, 'utf8');
+  const original = content;
+
+  content = content.replace(
+    /distributionUrl=.*gradle-[\w.\-]+-(bin|all)\.zip/,
+    `distributionUrl=https\\://services.gradle.org/distributions/gradle-${GRADLE_WRAPPER_VERSION}-bin.zip`
+  );
+
+  if (content === original) {
+    ok(`Gradle wrapper already on ${GRADLE_WRAPPER_VERSION} (or pattern not found — verify manually).`);
+  } else {
+    fs.writeFileSync(wrapperPropsPath, content, 'utf8');
+    ok(`Patched ${wrapperPropsPath} → Gradle ${GRADLE_WRAPPER_VERSION} (required by AGP ${AGP_VERSION}; the next build will re-download the Gradle wrapper — this can take a few minutes on a slow connection).`);
+  }
+}
+
+/**
  * Fixes Play Console finding #3 (R8 optimization) by:
  *  - enabling shrinkResources alongside the existing minifyEnabled
  *  - wiring up proguardFiles so shrinkResources has rules to work with
- *  - bumping AGP to a recent, safe 8.x release (8.13.0)
- *
- * Deliberately NOT jumping to AGP 9.0+ here — see AGP_VERSION comment above.
- * minifyEnabled + shrinkResources alone is what clears this specific Play
- * Console finding; no Gradle wrapper bump is needed for this AGP version
- * since the template's existing Gradle 8.11.1 already satisfies it.
+ *  - bumping AGP to a recent, safe 8.x release (8.13.0), with a matching
+ *    small Gradle wrapper bump since AGP 8.13.0 requires it
  */
 function patchR8Optimization(profile) {
   const appGradlePath = path.join(profile._outputDir, 'app', 'build.gradle');
@@ -217,6 +255,10 @@ function patchR8Optimization(profile) {
       ok(`Patched ${rootGradlePath} → Android Gradle Plugin ${AGP_VERSION}.`);
     }
   }
+
+  // AGP 8.13.0 requires Gradle >= 8.13 — confirmed by a real build failure
+  // against the template's default Gradle 8.11.1.
+  patchGradleWrapperVersion(profile);
 }
 
 const profileName = args.profile || args._[0];

@@ -16,8 +16,8 @@
   "navigationColor": "#8c5a3c",
   "backgroundColor": "#f7f3eb",
 
-  "appVersionName": "1.0.1",
-  "appVersionCode": 2,
+  "appVersionName": "1.0.2",
+  "appVersionCode": 3,
   "minSdkVersion": 24,
 
   "fallbackType": "customtabs",
