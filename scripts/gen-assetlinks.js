@@ -60,13 +60,28 @@ function main() {
   //
   // Set profile.playSigningFingerprint (in profiles/<name>.json) to the
   // "SHA-256 certificate fingerprint" shown under App signing key in Play
-  // Console, and it will be included here automatically.
-  const fingerprints = [uploadFingerprint];
-  if (profile.playSigningFingerprint) {
-    if (!fingerprints.includes(profile.playSigningFingerprint)) {
-      fingerprints.unshift(profile.playSigningFingerprint);
-    }
+  // Console, and it will be included here automatically. Accepts either a
+  // single string or an array of strings (e.g. upload key, Digital Asset
+  // Link fingerprint, classical key), so multiple trusted fingerprints can
+  // be listed side by side. Empty strings ("") are ignored. If one of the
+  // listed fingerprints already matches the upload key fingerprint derived
+  // from the keystore, it's left in place rather than duplicated.
+  const rawFingerprints = profile.playSigningFingerprint;
+  const extraFingerprints = (Array.isArray(rawFingerprints) ? rawFingerprints : [rawFingerprints])
+    .filter((fp) => typeof fp === 'string' && fp.trim() !== '');
+
+  const fingerprints = [];
+  const uploadKeyAlreadyListed = extraFingerprints.includes(uploadFingerprint);
+  if (uploadKeyAlreadyListed) {
+    ok('TWA upload key fingerprint already present in "playSigningFingerprint" — not adding a duplicate.');
   } else {
+    fingerprints.push(uploadFingerprint);
+  }
+  for (const fp of extraFingerprints) {
+    if (!fingerprints.includes(fp)) fingerprints.push(fp);
+  }
+
+  if (!extraFingerprints.length) {
     warn(
       'No "playSigningFingerprint" set in this profile. If Play App Signing is ' +
       'enabled for this app, the generated assetlinks.json will be INCOMPLETE and ' +
@@ -96,8 +111,8 @@ function main() {
   console.log('');
   log(`Host this exact content at: https://${profile.host}/.well-known/assetlinks.json`);
   log('Content-Type must be application/json, and it must be served over HTTPS with no redirects.');
-  if (profile.playSigningFingerprint) {
-    log('Includes both the Play App Signing key fingerprint and your local upload key fingerprint.');
+  if (extraFingerprints.length) {
+    log('Includes both the Play App Signing key fingerprint(s) and your local upload key fingerprint.');
   }
 
   if (args.write) {
