@@ -47,8 +47,12 @@
   "signingKey": {
     "path": "keystores/seeze.jks",
     "alias": "my-key-alias",
-    "dn": "CN=Seeze Admin, OU=Engineering, O=Seeze, L=Unknown, S=Unknown, C=IN"
+    "dn": "CN=Seeze, OU=Engineering, O=Automatech, L=Unknown, S=Unknown, C=IN"
   },
 
-  "playSigningFingerprint": "10:0D:65:31:3B:1F:58:90:80:7F:30:A7:70:50:4E:99:4A:A9:17:18:B0:B8:A7:68:47:C9:29:A4:9A:48:23:0A"
+  "playSigningFingerprint": [
+    "82:B0:F4:7D:AE:45:B3:32:6E:DB:D3:22:DA:33:2F:8A:4F:0A:91:A5:FA:56:53:40:45:AA:BC:A5:5B:A0:99:63",
+    "10:0D:65:31:3B:1F:58:90:80:7F:30:A7:70:50:4E:99:4A:A9:17:18:B0:B8:A7:68:47:C9:29:A4:9A:48:23:0A", 
+    "24:A3:22:27:CF:36:36:8B:BB:30:85:FA:BA:C2:CF:7F:22:79:FC:B8:53:19:3B:79:CD:A3:6E:BA:21:DA:D2:0F"
+  ]
 }

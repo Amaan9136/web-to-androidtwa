@@ -1,0 +1,37 @@
+{
+  "packageId": "live.automatech.devlabs.twa",
+  "host": "devlabs.automatech.live",
+  "name": "DevLabs - Coding & Science Events",
+  "launcherName": "DevLabs",
+  "display": "standalone",
+  "webManifestUrl": "https://devlabs.automatech.live/manifest.json",
+  "startUrl": "/",
+  "iconUrl": "https://devlabs.automatech.live/icon-512.png",
+  "maskableIconUrl": "https://devlabs.automatech.live/maskable-icon-512.png",
+  "monochromeIconUrl": "https://devlabs.automatech.live/monochrome-icon-512.png",
+  "themeColor": "#0f172a",
+  "navigationColor": "#0f172a",
+  "backgroundColor": "#0f172a",
+  "appVersionName": "1.0.0",
+  "appVersionCode": 1,
+  "minSdkVersion": 24,
+  "fallbackType": "customtabs",
+  "enableNotifications": true,
+  "features": {},
+  "shortcuts": [
+    { "name": "Events", "shortName": "Events", "url": "/events", "chosenIconUrl": "https://devlabs.automatech.live/icon-192.png" },
+    { "name": "My Teams", "shortName": "Teams", "url": "/teams", "chosenIconUrl": "https://devlabs.automatech.live/icon-192.png" },
+    { "name": "Dashboard", "shortName": "Dashboard", "url": "/dashboard", "chosenIconUrl": "https://devlabs.automatech.live/icon-192.png" },
+    { "name": "Leaderboard", "shortName": "Leaderboard", "url": "/leaderboard", "chosenIconUrl": "https://devlabs.automatech.live/icon-192.png" }
+  ],
+  "signingKey": {
+    "path": "keystores/devlabs.jks",
+    "alias": "devlabs",
+    "dn": "CN=DevLabs, OU=Engineering, O=Automatech, L=Bangalore, S=Karnataka, C=IN"
+  },
+  "playSigningFingerprint": [
+    "3B:48:0C:30:4A:E3:04:37:4B:47:AE:26:1B:14:17:94:69:81:6A:16:97:5B:11:84:4D:BF:AB:C4:CD:9A:91:16",
+    "3B:2A:63:C0:D7:B3:E4:F4:3C:88:70:82:E1:7E:6B:D3:D8:C4:26:48:DC:41:C6:C9:A7:FD:49:B7:92:E1:31:E0",
+    "8E:8C:4E:3E:D4:5E:2E:2E:5A:C8:6F:47:E8:62:C8:EB:EE:F2:60:05:50:88:EE:88:AA:39:E9:B0:78:7A:42:DB"
+  ]
+}
